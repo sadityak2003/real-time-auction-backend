@@ -1,12 +1,18 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
+const dns = require("dns");
+
+// Force Node.js to prefer IPv4 first (important for Supabase pooler)
+dns.setDefaultResultOrder("ipv4first");
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
-  family: 4,
   logging: console.log, // Enable logging temporarily for debugging
   dialectOptions: {
-    ssl: process.env.NODE_ENV === 'production' ? { require: true, rejectUnauthorized: false } : false
+    ssl: process.env.NODE_ENV === 'production'
+      ? { require: true, rejectUnauthorized: false }
+      : false,
+    family: 4 // Force IPv4 for pg connection
   }
 });
 

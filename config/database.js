@@ -3,6 +3,7 @@ require('dotenv').config();
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
+  family: 4,
   logging: console.log, // Enable logging temporarily for debugging
   dialectOptions: {
     ssl: process.env.NODE_ENV === 'production' ? { require: true, rejectUnauthorized: false } : false

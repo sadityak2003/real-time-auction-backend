@@ -20,7 +20,6 @@ async function testConnection() {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
     
-    // Check if the Auctions table exists
     const tableExists = await sequelize.getQueryInterface().tableExists('Auctions');
     console.log('Auctions table exists:', tableExists);
     

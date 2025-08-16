@@ -12,17 +12,35 @@ const bidRoutes = require('./routes/bids');
 
 const app = express();
 const server = http.createServer(app);
+
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://real-time-auction-frontend-mas-cs.onrender.com'
+];
+
+// Socket.IO with multiple origins
 const io = socketIo(server, {
   cors: {
-    origin: process.env.CLIENT_URL || process.env.FRONTEND_URL,
-    methods: ["GET", "POST"]
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 
-// Middleware
+// Express CORS middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || process.env.FRONTEND_URL
+  origin: function (origin, callback) {
+    // Allow requests with no origin (e.g. Postman, curl)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) === -1) {
+      return callback(new Error('CORS policy: This origin is not allowed.'), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true
 }));
+
 app.use(express.json());
 
 // Make io available in routes

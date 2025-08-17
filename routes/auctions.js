@@ -178,7 +178,7 @@ router.post("/:id/decision", auth, async (req, res) => {
       }
     }
     else if (decision === "rejected") {
-      auction.status = "rejected"; // ✅ Use "cancelled" instead of "rejected"
+      auction.status = "rejected"; 
 
       // Notify highest bidder via email
       const highestBidder = auction.bids && auction.bids[0]?.bidder;
@@ -222,6 +222,30 @@ router.post("/:id/decision", auth, async (req, res) => {
           from: "sadityak2003@gmail.com",
           subject: "Counter Offer Made",
           text: `A counter offer has been made on your auction for ${auction.title}.`,
+        });
+      }
+    }
+    else if (decision === "cancelled") {
+      auction.status = "cancelled";
+
+      // Notify highest bidder via email
+      const highestBidder = auction.bids && auction.bids[0]?.bidder;
+      if (highestBidder) {
+        sendMail({
+          to: highestBidder.email,
+          from: "sadityak2003@gmail.com",
+          subject: "Auction Cancelled",
+          text: `The auction for ${auction.title} has been cancelled.`,
+        });
+      }
+
+      // Notify seller via email
+      if (auction.seller?.email) {
+        sendMail({
+          to: auction.seller.email,
+          from: "sadityak2003@gmail.com",
+          subject: "Auction Cancelled",
+          text: `Your auction for ${auction.title} has been cancelled.`,
         });
       }
     }

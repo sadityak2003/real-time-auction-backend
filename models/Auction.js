@@ -49,7 +49,7 @@ const Auction = sequelize.define('Auction', {
     allowNull: true
   },
   sellerDecision: {
-    type: DataTypes.ENUM('pending', 'accepted', 'rejected', 'counter_offer'),
+    type: DataTypes.ENUM('pending', 'accepted', 'rejected', 'counter_offer', 'cancelled'),
     allowNull: true
   }
 });

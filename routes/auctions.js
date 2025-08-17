@@ -178,7 +178,7 @@ router.post("/:id/decision", auth, async (req, res) => {
       }
     }
     else if (decision === "rejected") {
-      auction.status = "cancelled"; // ✅ Use "cancelled" instead of "rejected"
+      auction.status = "rejected"; // ✅ Use "cancelled" instead of "rejected"
 
       // Notify highest bidder via email
       const highestBidder = auction.bids && auction.bids[0]?.bidder;

@@ -115,10 +115,29 @@ router.post("/", auth, async (req, res) => {
 router.post("/:id/decision", auth, async (req, res) => {
   try {
     const { decision } = req.body; // 'accepted', 'rejected', 'counter_offer'
-    const auction = await Auction.findByPk(req.params.id);
+    const auction = await Auction.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: 'seller',
+          attributes: ['email', 'username']
+        },
+        {
+          model: Bid,
+          as: 'bids',
+          include: [{
+            model: User,
+            as: 'bidder',
+            attributes: ['email', 'username']
+          }],
+          order: [['amount', 'DESC']]
+        }
+      ]
+    });
 
     console.log("Auction ID:", req.params.id);
     console.log("User ID:", req.user.id);
+    console.log("Decision:", decision);
     console.log(
       "Auction found:",
       auction ? auction.id : null,
@@ -132,15 +151,79 @@ router.post("/:id/decision", auth, async (req, res) => {
         .json({ error: "Auction not found or unauthorized" });
     }
 
+    // Set seller decision
     auction.sellerDecision = decision;
+    
     if (decision === "accepted") {
       auction.status = "completed";
+
+      // Notify winner via email
+      const winner = auction.bids && auction.bids[0]?.bidder;
+      if (winner) {
+        sendMail({
+          to: winner.email,
+          from: "sadityak2003@gmail.com",
+          subject: "Congratulations! You've won the auction",
+          text: `You've won the auction for ${auction.title}.`,
+        });
+      }
+      
+      if (auction.seller?.email) {
+        sendMail({
+          to: auction.seller.email,
+          from: "sadityak2003@gmail.com",
+          subject: "Auction Completed",
+          text: `The auction for ${auction.title} has been completed.`,
+        });
+      }
     }
     else if (decision === "rejected") {
-      auction.status = "rejected";
+      auction.status = "cancelled"; // ✅ Use "cancelled" instead of "rejected"
+
+      // Notify highest bidder via email
+      const highestBidder = auction.bids && auction.bids[0]?.bidder;
+      if (highestBidder) {
+        sendMail({
+          to: highestBidder.email,
+          from: "sadityak2003@gmail.com",
+          subject: "Auction Rejected",
+          text: `Your bid for ${auction.title} has been rejected.`,
+        });
+      }
+
+      // Notify seller via email
+      if (auction.seller?.email) {
+        sendMail({
+          to: auction.seller.email,
+          from: "sadityak2003@gmail.com",
+          subject: "Auction Rejected",
+          text: `The auction for ${auction.title} has been rejected.`,
+        });
+      }
     }
     else if (decision === "counter_offer") {
       auction.status = "counter_offer";
+
+      // Notify highest bidder via email
+      const highestBidder = auction.bids && auction.bids[0]?.bidder;
+      if (highestBidder) {
+        sendMail({
+          to: highestBidder.email,
+          from: "sadityak2003@gmail.com",
+          subject: "Counter Offer Made",
+          text: `A counter offer has been made on the auction for ${auction.title}.`,
+        });
+      }
+
+      // Notify seller via email
+      if (auction.seller?.email) {
+        sendMail({
+          to: auction.seller.email,
+          from: "sadityak2003@gmail.com",
+          subject: "Counter Offer Made",
+          text: `A counter offer has been made on your auction for ${auction.title}.`,
+        });
+      }
     }
 
     await auction.save();
@@ -153,6 +236,7 @@ router.post("/:id/decision", auth, async (req, res) => {
 
     res.json(auction);
   } catch (error) {
+    console.error("Error in seller decision:", error);
     res.status(500).json({ error: error.message });
   }
 });

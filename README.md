@@ -4,24 +4,34 @@ This is the backend service for the StarPawns real-time auction platform.
 It provides APIs, authentication, real-time socket communication, and integrations with Supabase (Postgres), Redis, and SendGrid.
 
 🚀 Tech Stack
+
 -Node.js + Express — REST API
+
 -Supabase (PostgreSQL) — database
+
 -Redis (Upstash) — caching & pub/sub
+
 -Socket.IO — real-time bidding & auction updates
+
 -JWT — authentication
 
 ⚙️ Environment Variables (.env)
 
 Create a .env file in the root (backend/) with the following:
+
 NODE_ENV=production
+
 PORT=5000
 
 CLIENT_URL=https://your-frontend-url.com
+
 SOCKET_URL=https://your-backend-url.com
 
 # ===== Database (Supabase) =====
 SUPABASE_URL=your-supabase-url
+
 SUPABASE_KEY=your-supabase-service-key
+
 DATABASE_URL=your-supabase-postgres-url
 
 # ===== Redis (Upstash) =====

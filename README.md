@@ -82,12 +82,16 @@ The backend uses Socket.IO for real-time bidding.
 Events include:
 
 placeBid → user places a bid
+
 newBid → broadcast new bid to all clients
+
 sellerDecision → notify buyers when seller accepts / rejects / counters
 
 ✅ Deployment
 
 Frontend: Hosted on Render / Netlify (update CLIENT_URL)
+
 Backend: Hosted on Render (PORT=5000)
+
 Ensure CORS is configured to allow your frontend URL
 

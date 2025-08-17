@@ -90,9 +90,13 @@ npm start       # for production
 Base URL: https://your-backend-url.com/api
 
 POST /auth/register – Register user
+
 POST /auth/login – Login user & get JWT
+
 GET /auctions – Fetch all auctions
+
 POST /auctions/:id/decision – Seller decision (accept / reject / counter)
+
 POST /bids – Place a bid
 
 

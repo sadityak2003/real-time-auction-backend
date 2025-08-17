@@ -10,40 +10,6 @@ It provides APIs, authentication, real-time socket communication, and integratio
 -Socket.IO — real-time bidding & auction updates
 -JWT — authentication
 
-📂 Project Structure
-
-backend/
-│── config/             # Database, Email, Redis configurations
-│    ├── database.js
-│    ├── email.js
-│    └── redis.js
-│
-│── middleware/         # Middlewares (auth, error handling)
-│    └── auth.js
-│
-│── models/             # Sequelize models
-│    ├── Auction.js
-│    ├── Bid.js
-│    ├── User.js
-│    └── index.js
-│
-│── routes/             # API routes
-│    ├── auctions.js
-│    ├── auth.js
-│    └── bids.js
-│
-│── socket/             # WebSocket handlers
-│    └── socketHandler.js
-│
-│── utils/              # Utility functions
-│    ├── emailTemplates/
-│    │     ├── invoice.js
-│    │     └── notification.js
-│
-│── server.js           # Main entry point
-│── package.json
-│── .env                # Environment variables1
-
 ⚙️ Environment Variables (.env)
 
 Create a .env file in the root (backend/) with the following:

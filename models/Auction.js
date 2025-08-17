@@ -37,7 +37,7 @@ const Auction = sequelize.define('Auction', {
     allowNull: false
   },
   status: {
-    type: DataTypes.ENUM('pending', 'active', 'ended', 'completed', 'cancelled'),
+    type: DataTypes.ENUM('pending', 'active', 'ended', 'completed', 'cancelled', 'rejected', 'counter_offer'),
     defaultValue: 'pending'
   },
   sellerId: {
